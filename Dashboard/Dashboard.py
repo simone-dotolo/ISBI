@@ -132,5 +132,5 @@ with right_column:
     st.write(f'**Grafico a torta dell\' umidità :droplet:**')
     st.plotly_chart(humidity_chart)
 
-    st.subheader('Andamento dei parassiti :cockroach:')
-    st.bar_chart(filtered_df_right.reset_index(), x='Date', y='parasite_count')
+st.subheader('Andamento dei parassiti anno 2023 :cockroach:')
+st.bar_chart(filtered_df_right.reset_index(), x='Date', y='parasite_count')
