@@ -33,10 +33,13 @@ with st.sidebar:
     st.header('Filtri')
 
     st.subheader('Prima colonna')
+    # Filtro data
     data_iniziale_left = st.date_input('Data iniziale', value=pd.to_datetime(df_left['Date'].min()).date())
     data_finale_left = st.date_input('Data finale', value=pd.to_datetime(df_left['Date'].max()).date())
 
+    # Filtro temperatura
     range_temp_left = st.slider('Range temperatura', df_left['temperature_mean'].min(), df_left['temperature_mean'].max(), (df_left['temperature_mean'].min(), df_left['temperature_mean'].max()))
+    # Filtro umidità
     range_umid_left = st.slider('Range umidità', df_left['relativehumidity_mean'].min(), df_left['relativehumidity_mean'].max(), (df_left['relativehumidity_mean'].min(), df_left['relativehumidity_mean'].max()))
 
     st.subheader('Seconda colonna')
@@ -83,8 +86,9 @@ with left_column:
     for temp_name in temp_names:
         min_temp, max_temp = temp_name.split('-')
         temp_values.append(len(filtered_df_left[(filtered_df_left['temperature_mean']>int(min_temp)) & (filtered_df_left['temperature_mean']<=int(max_temp))]))
+    
     temp_chart = px.pie(names=temp_names, values=temp_values)
-    st.write(f'**Grafico a torta della temperatura :thermometer:**')
+    st.subheader(f'**Grafico a torta della temperatura :thermometer:**')
     st.plotly_chart(temp_chart)
 
     humidity_names = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90-100']
@@ -93,8 +97,9 @@ with left_column:
     for humidity_name in humidity_names:
         min_humidity, max_humidity = humidity_name.split('-')
         humidity_values.append(len(filtered_df_left[(filtered_df_left['relativehumidity_mean']>int(min_humidity)) & (filtered_df_left['relativehumidity_mean']<=int(max_humidity))]))
+    
     humidity_chart = px.pie(names=humidity_names, values=humidity_values)
-    st.write(f'**Grafico a torta dell\' umidità :droplet:**')
+    st.subheader(f'**Grafico a torta dell\' umidità :droplet:**')
     st.plotly_chart(humidity_chart)
 
 with right_column:
@@ -118,8 +123,9 @@ with right_column:
     for temp_name in temp_names:
         min_temp, max_temp = temp_name.split('-')
         temp_values.append(len(filtered_df_right[(filtered_df_right['temperature_mean']>int(min_temp)) & (filtered_df_right['temperature_mean']<=int(max_temp))]))
+    
     temp_chart = px.pie(names=temp_names, values=temp_values)
-    st.write(f'**Grafico a torta della temperatura :thermometer:**')
+    st.subheader(f'**Grafico a torta della temperatura :thermometer:**')
     st.plotly_chart(temp_chart)
 
     humidity_names = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90-100']
@@ -128,8 +134,9 @@ with right_column:
     for humidity_name in humidity_names:
         min_humidity, max_humidity = humidity_name.split('-')
         humidity_values.append(len(filtered_df_right[(filtered_df_right['relativehumidity_mean']>int(min_humidity)) & (filtered_df_right['relativehumidity_mean']<=int(max_humidity))]))
+    
     humidity_chart = px.pie(names=humidity_names, values=humidity_values)
-    st.write(f'**Grafico a torta dell\' umidità :droplet:**')
+    st.subheader(f'**Grafico a torta dell\' umidità :droplet:**')
     st.plotly_chart(humidity_chart)
 
 st.subheader('Andamento dei parassiti anno 2023 :cockroach:')

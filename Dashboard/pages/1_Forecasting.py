@@ -36,13 +36,17 @@ with st.sidebar:
     y = st.selectbox(label='Selezionare la variabile da predirre', options=['Temperatura', 'Umidità'])
 
     st.header('Parametri Prophet')
+
     orizzonte = st.slider('Orizzonte della previsione (giorni)', min_value=1, max_value=365, value=90)
     crescita = st.radio(label='Crescita', options=['Lineare', 'Logistica'])
     cap_percentage = 1
+
     if crescita == 'Logistica' and y == 'Temperatura':
         st.info('Configura la Constant Carrying Capacity come percentuale della temperatura massima registrata')
         cap_percentage = st.slider('Constant carrying capacity', min_value=1.0, max_value=1.5, value=1.2)
+
     stagionalità = st.radio(label='Stagionalità', options=['Additiva', 'Moltiplicativa'])
+    
     with st.expander('Componenti stagionalità'):
         stag_settimanale = st.checkbox('Settimanale')
         stag_mensile = st.checkbox('Mensile', value=True)
