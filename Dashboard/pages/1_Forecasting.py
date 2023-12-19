@@ -3,6 +3,7 @@ import streamlit as st
 from plotly import express as px
 from prophet import Prophet
 
+# Caricamento dati
 @st.cache_data
 def get_data(sheet=0):
     f = 'temp_humid_data.xlsx'
@@ -20,6 +21,8 @@ st.set_page_config(
 
 st.title(':chart_with_upwards_trend: Agritech Forecasting :chart_with_upwards_trend:')
 
+# Colonna sinista: Dati Anno 2022
+# Colonna destra: Dati Anno 2023
 left_column, right_column = st.columns(2)
 
 with left_column:
@@ -30,21 +33,29 @@ with right_column:
     with st.spinner('Caricamento dati...'):
         df_right = get_data(sheet=1)
 
+# Sidebar
 with st.sidebar:
+    # Selezione anno per forecasting
     anno = st.selectbox(label='Seleziona un anno', options=['2022', '2023'])
 
+    # Selezione variabile per le previsioni
     y = st.selectbox(label='Selezionare la variabile da predirre', options=['Temperatura', 'Umidità'])
 
+    # Parametri Prophet
     st.header('Parametri Prophet')
 
+    # Orizzonte temporale della previsione
     orizzonte = st.slider('Orizzonte della previsione (giorni)', min_value=1, max_value=365, value=90)
+    # Tipologia crescita Prophet (lineare o logistica)
     crescita = st.radio(label='Crescita', options=['Lineare', 'Logistica'])
     cap_percentage = 1
 
+    # Carrying Capacity per crescita logistica (saturazione)
     if crescita == 'Logistica' and y == 'Temperatura':
         st.info('Configura la Constant Carrying Capacity come percentuale della temperatura massima registrata')
         cap_percentage = st.slider('Constant carrying capacity', min_value=1.0, max_value=1.5, value=1.2)
 
+    # Stagionalità
     stagionalità = st.radio(label='Stagionalità', options=['Additiva', 'Moltiplicativa'])
     
     with st.expander('Componenti stagionalità'):
@@ -66,6 +77,7 @@ with right_column:
 
 df = df_left.copy() if anno == '2022' else df_right.copy()
 
+# Fitting del modello
 with st.spinner('Model fitting..'):
     prophet_df = df.rename(columns={'Date': 'ds', 'temperature_mean' if y == 'Temperatura' else 'relativehumidity_mean': 'y'})
     model = Prophet(
@@ -80,17 +92,20 @@ with st.spinner('Model fitting..'):
         prophet_df['cap'] = cap_percentage * df['temperature_mean' if y == 'Temperatura' else 'relativehumidity_mean'].max()
     model.fit(prophet_df)
 
+# Previsioni
 with st.spinner('Making predictions..'):
     future = model.make_future_dataframe(periods=orizzonte, freq='D')
     if crescita == 'Logistica':
         future['cap'] = cap_percentage * df['temperature_mean' if y == 'Temperatura' else 'relativehumidity_mean'].max()
     forecast = model.predict(future)
 
+    # Clipping umidità (no umidità > 100%)
     if y == 'Umidità':
         forecast['yhat'] = forecast['yhat'].clip(upper=100)
         forecast['yhat_lower'] = forecast['yhat_lower'].clip(upper=100)
         forecast['yhat_upper'] = forecast['yhat_upper'].clip(upper=100)
 
+# Plot del forecast
 st.subheader(f'Forecasting {y} anno {anno}')
 
 fig = px.scatter(prophet_df, x='ds', y='y', labels={'ds': 'Day', 'y': 'Close'})
