@@ -119,4 +119,3 @@ dependencies:
       - webencodings==0.5.1
       - yfinance==0.2.32
       - zipp==3.17.0
-prefix: /home/simone/miniconda3/envs/scrape_tirocini
