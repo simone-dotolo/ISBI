@@ -108,7 +108,7 @@ with st.spinner('Making predictions..'):
 # Plot del forecast
 st.subheader(f'Forecasting {y} anno {anno}')
 
-fig = px.scatter(prophet_df, x='ds', y='y', labels={'ds': 'Day', 'y': 'Close'})
+fig = px.scatter(prophet_df, x='ds', y='y', labels={'ds': 'Day', 'y': y})
 fig.add_scatter(x=forecast['ds'], y=forecast['yhat'], name='yhat')
 fig.add_scatter(x=forecast['ds'], y=forecast['yhat_lower'], name='yhat_lower')
 fig.add_scatter(x=forecast['ds'], y=forecast['yhat_upper'], name='yhat_upper')
